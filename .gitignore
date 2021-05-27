@@ -1,0 +1,6 @@
+.terraform/
+.git
+tfplan.*
+*.auto.tfvars
+*.tfstate
+*.tfstate.backup
