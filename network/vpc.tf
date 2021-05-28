@@ -15,6 +15,7 @@ resource "aws_subnet" "public_subnets" {
   vpc_id            = aws_vpc.cluster_vpc.id
   cidr_block        = cidrsubnet(local.base_cidr, local.new_bits, count.index)
   availability_zone = element(var.azs, count.index)
+  map_public_ip_on_launch = true
   tags = {
     "Name" = "public-subnet-${count.index}"
   }
@@ -26,6 +27,7 @@ resource "aws_subnet" "private_subnets" {
   vpc_id            = aws_vpc.cluster_vpc.id
   cidr_block        = cidrsubnet(local.base_cidr, local.new_bits, count.index + 3)
   availability_zone = element(var.azs, count.index)
+  map_public_ip_on_launch = true
   tags = {
     "Name"                                          = "private-subnet-${count.index}"
     "kubernetes.io/cluster/${var.eks_cluster_name}" = "shared"
@@ -33,7 +35,9 @@ resource "aws_subnet" "private_subnets" {
   }
 }
 
-resource "aws_subnet" "control_plane_subnets" {
+#as per documentation, these subnets that will be passed to the cluster resource should be smaller
+#need to figure out how to do this properly in the locals block.
+resource "aws_subnet" "eni_subnets" {
   count             = 3
   vpc_id            = aws_vpc.cluster_vpc.id
   cidr_block        = cidrsubnet(local.base_cidr, local.new_bits, count.index + 6)

@@ -1,5 +1,5 @@
-output "control_plane_subnets" {
-  value = aws_subnet.control_plane_subnets.*.id
+output "eni_subnets" {
+  value = aws_subnet.eni_subnets.*.id
 }
 
 output "cluster_sg" {

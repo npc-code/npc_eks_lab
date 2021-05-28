@@ -22,16 +22,18 @@ module "network" {
   subnet_mask      = var.subnet_mask
   azs              = data.aws_availability_zones.azs.names
   eks_cluster_name = var.cluster_name
+  eks_generated_sg = aws_eks_cluster.test_cluster.vpc_config[0].cluster_security_group_id
 }
 
 resource "aws_eks_cluster" "test_cluster" {
   name     = var.cluster_name
   role_arn = aws_iam_role.cluster_role.arn
 
+
   vpc_config {
-    # security_group_ids      = [aws_security_group.eks_cluster.id, aws_security_group.eks_nodes.id]
+    endpoint_private_access = true
     security_group_ids  = [module.network.cluster_sg, module.network.node_sg]
-    subnet_ids          = module.network.control_plane_subnets
+    subnet_ids          = module.network.eni_subnets
     public_access_cidrs = ["74.69.167.125/32"]
   }
 

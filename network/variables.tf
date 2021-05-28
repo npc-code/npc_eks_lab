@@ -13,6 +13,11 @@ variable "eks_cluster_name" {
   description = "eks cluster name"
 }
 
+variable "eks_generated_sg" {
+    type = string
+    description = "eks generated security group id"
+}
+
 variable "network_mask" {
   type    = number
   default = 16
