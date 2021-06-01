@@ -13,3 +13,7 @@ output "vpc_config_sg" {
 output "created_cluster_sg_from_module" {
   value = module.network.cluster_sg
 }
+
+output "alb_security_group_id" {
+  value = module.network.alb_sg
+}

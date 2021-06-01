@@ -19,6 +19,7 @@ module "network" {
   azs              = data.aws_availability_zones.azs.names
   eks_cluster_name = var.cluster_name
   eks_generated_sg = aws_eks_cluster.test_cluster.vpc_config[0].cluster_security_group_id
+  external_ip      = var.external_ip
 }
 
 resource "aws_eks_cluster" "test_cluster" {

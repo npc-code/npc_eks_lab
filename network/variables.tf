@@ -18,6 +18,11 @@ variable "eks_generated_sg" {
   description = "eks generated security group id"
 }
 
+variable "external_ip" {
+    type = string
+    description = "ip range to allow access from for alb"
+}
+
 variable "network_mask" {
   type    = number
   default = 16
