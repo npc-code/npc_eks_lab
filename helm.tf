@@ -6,9 +6,6 @@ provider "helm" {
   }
 }
 
-
-
-
 resource "helm_release" "metric-server" {
   name       = "metric-server"
   repository = "https://charts.bitnami.com/bitnami"
