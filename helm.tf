@@ -37,37 +37,6 @@ resource "helm_release" "alb-ingress" {
       value = set.value
     }
   }
-
-
-  #set {
-  #  name  = "serviceAccount.create"
-  #  value = true
-  #}
-
-  #set {
-  #    name = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-  #    value = aws_iam_role.alb_ingress.arn
-  #}
-
-  #set {
-  #  name  = "clusterName"
-  #  value = var.cluster_name
-  #}
-
-  #set {
-  ##  name  = "serviceAccount.name"
-  #  value = local.k8s_alb_service_account_name
-  #}
-
-  #set {
-  #    name = "region"
-  #    value = data.aws_region.current.name
-  #}
-
-  #set {
-  #    name  = "vpcId"
-  #    value = module.network.vpc_id 
-  #}
 }
 
 resource "helm_release" "auto-scaler" {
@@ -75,35 +44,20 @@ resource "helm_release" "auto-scaler" {
   repository = "https://kubernetes.github.io/autoscaler"
   chart      = "cluster-autoscaler"
   namespace  = "kube-system"
-
-  set {
-    name  = "awsRegion"
-    value = data.aws_region.current.name
-  }
-
-  set {
-    name  = "autoDiscovery.clusterName"
-    value = var.cluster_name
-  }
-
-  set {
-    name  = "rbac.create"
-    value = "true"
-  }
-
-  set {
-    name  = "rbac.serviceAccount.create"
-    value = "true"
-  }
-
-  set {
-    name  = "rbac.serviceAccount.name"
-    value = local.k8s_service_account_name
-  }
-
-  set {
-    name  = "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = aws_iam_role.autoscaler.arn
-  }
-
+  
+    dynamic "set" {
+      for_each = {
+          "awsRegion" = data.aws_region.current.name
+          "autoDiscovery.clusterName" = var.cluster_name
+          "rbac.create" = true
+          "rbac.serviceAccount.create" = true
+          "rbac.serviceAccount.name" = local.k8s_service_account_name
+          "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn" = aws_iam_role.autoscaler.arn
+      }
+      
+      content {
+          name = set.key
+          value = set.value
+      }
+    }
 }
