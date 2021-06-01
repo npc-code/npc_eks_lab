@@ -33,6 +33,32 @@ resource "aws_iam_role" "eks_nodes" {
   name               = "${var.cluster_name}-worker-${var.environment}"
   assume_role_policy = data.aws_iam_policy_document.assume_workers.json
 }
+
+resource "aws_iam_role" "autoscaler" {
+  name               = "${var.cluster_name}-autoscaler-${var.environment}"
+  assume_role_policy = data.aws_iam_policy_document.autoscaling.json
+
+}
+
+data "aws_iam_policy_document" "autoscaling" {
+  statement {
+    effect = "Allow"
+    principals {
+      type        = "Federated"
+      identifiers = [aws_iam_openid_connect_provider.oidc_provider.arn]
+    }
+
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "${aws_iam_openid_connect_provider.oidc_provider.url}:sub"
+      values   = ["system:serviceaccount:${local.k8s_service_account_namespace}:${local.k8s_service_account_name}"]
+    }
+  }
+}
+
+#should move the autoscaler out of this, since it should only be associated with the service account.
 data "aws_iam_policy_document" "assume_workers" {
   statement {
     effect  = "Allow"
@@ -43,22 +69,29 @@ data "aws_iam_policy_document" "assume_workers" {
     }
   }
 }
+
 resource "aws_iam_role_policy_attachment" "aws_eks_worker_node_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.eks_nodes.name
 }
+
 resource "aws_iam_role_policy_attachment" "aws_eks_cni_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = aws_iam_role.eks_nodes.name
 }
+
 resource "aws_iam_role_policy_attachment" "ec2_read_only" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.eks_nodes.name
 }
+
 resource "aws_iam_role_policy_attachment" "cluster_autoscaler" {
   policy_arn = aws_iam_policy.cluster_autoscaler_policy.arn
-  role       = aws_iam_role.eks_nodes.name
+  role       = aws_iam_role.autoscaler.name
 }
+
+#this should be more restrictive, allows termination of instance in ANY autoscaling group, along with setdesired capacity.
+#can also refactor to use iam policy document, easier to read.
 resource "aws_iam_policy" "cluster_autoscaler_policy" {
   name        = "ClusterAutoScaler"
   description = "Give the worker node running the Cluster Autoscaler access to required resources and actions"
@@ -81,4 +114,5 @@ resource "aws_iam_policy" "cluster_autoscaler_policy" {
     ]
 }
 EOF
+
 }

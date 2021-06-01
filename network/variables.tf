@@ -14,8 +14,8 @@ variable "eks_cluster_name" {
 }
 
 variable "eks_generated_sg" {
-    type = string
-    description = "eks generated security group id"
+  type        = string
+  description = "eks generated security group id"
 }
 
 variable "network_mask" {

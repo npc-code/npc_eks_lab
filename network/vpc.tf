@@ -11,27 +11,28 @@ resource "aws_vpc" "cluster_vpc" {
 
 #needs to be tagged a certain way for cluster interaction
 resource "aws_subnet" "public_subnets" {
-  count             = 3
-  vpc_id            = aws_vpc.cluster_vpc.id
-  cidr_block        = cidrsubnet(local.base_cidr, local.new_bits, count.index)
-  availability_zone = element(var.azs, count.index)
+  count                   = 3
+  vpc_id                  = aws_vpc.cluster_vpc.id
+  cidr_block              = cidrsubnet(local.base_cidr, local.new_bits, count.index)
+  availability_zone       = element(var.azs, count.index)
   map_public_ip_on_launch = true
   tags = {
-    "Name" = "public-subnet-${count.index}"
+    "Name"                                          = "public-subnet-${count.index}"
+    "kubernetes.io/cluster/${var.eks_cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                        = 1
   }
 }
 
 #needs to be tagged a certain way for nodes
 resource "aws_subnet" "private_subnets" {
-  count             = 3
-  vpc_id            = aws_vpc.cluster_vpc.id
-  cidr_block        = cidrsubnet(local.base_cidr, local.new_bits, count.index + 3)
-  availability_zone = element(var.azs, count.index)
+  count                   = 3
+  vpc_id                  = aws_vpc.cluster_vpc.id
+  cidr_block              = cidrsubnet(local.base_cidr, local.new_bits, count.index + 3)
+  availability_zone       = element(var.azs, count.index)
   map_public_ip_on_launch = true
   tags = {
-    "Name"                                          = "private-subnet-${count.index}"
-    "kubernetes.io/cluster/${var.eks_cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"               = 1
+    "Name"                            = "private-subnet-${count.index}"
+    "kubernetes.io/role/internal-elb" = 1
   }
 }
 
