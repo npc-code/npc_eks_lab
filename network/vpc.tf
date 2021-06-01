@@ -11,7 +11,7 @@ resource "aws_vpc" "cluster_vpc" {
 
 #needs to be tagged a certain way for cluster interaction
 resource "aws_subnet" "public_subnets" {
-  count                   = 3
+  count                   = local.num_subnets
   vpc_id                  = aws_vpc.cluster_vpc.id
   cidr_block              = cidrsubnet(local.base_cidr, local.new_bits, count.index)
   availability_zone       = element(var.azs, count.index)
@@ -25,9 +25,9 @@ resource "aws_subnet" "public_subnets" {
 
 #needs to be tagged a certain way for nodes
 resource "aws_subnet" "private_subnets" {
-  count                   = 3
+  count                   = local.num_subnets
   vpc_id                  = aws_vpc.cluster_vpc.id
-  cidr_block              = cidrsubnet(local.base_cidr, local.new_bits, count.index + 3)
+  cidr_block              = cidrsubnet(local.base_cidr, local.new_bits, count.index + local.num_subnets)
   availability_zone       = element(var.azs, count.index)
   map_public_ip_on_launch = true
   tags = {
@@ -39,12 +39,12 @@ resource "aws_subnet" "private_subnets" {
 #as per documentation, these subnets that will be passed to the cluster resource should be smaller
 #need to figure out how to do this properly in the locals block.
 resource "aws_subnet" "eni_subnets" {
-  count             = 3
+  count             = local.num_subnets
   vpc_id            = aws_vpc.cluster_vpc.id
-  cidr_block        = cidrsubnet(local.base_cidr, local.new_bits, count.index + 6)
+  cidr_block        = cidrsubnet(local.base_cidr, local.new_bits, count.index + local.num_subnets + local.num_subnets)
   availability_zone = element(var.azs, count.index)
   tags = {
-    "Name" = "control-plane-subnet-${count.index}"
+    "Name" = "eni-subnet-${count.index}"
   }
 
 }

@@ -26,13 +26,13 @@
 #running into issues creating the NAT within the test account, may be at full EIP allocation.
 #will use an internet gateway instead for these subnets, purely for testing purposes
 resource "aws_route_table_association" "ig_route_testing" {
-  count          = 3
+  count          = local.num_subnets
   subnet_id      = element(aws_subnet.private_subnets.*.id, count.index)
   route_table_id = aws_route_table.internet_route.id
 }
 
 resource "aws_route_table_association" "ig_route" {
-  count          = 3
+  count          = local.num_subnets
   subnet_id      = element(aws_subnet.public_subnets.*.id, count.index)
   route_table_id = aws_route_table.internet_route.id
 }
