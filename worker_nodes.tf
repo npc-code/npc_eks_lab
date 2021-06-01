@@ -11,9 +11,14 @@ resource "aws_eks_node_group" "main" {
 
   scaling_config {
     desired_size = 1
-    max_size     = 1
+    max_size     = 2
     min_size     = 1
   }
+
+  lifecycle {
+    ignore_changes = [scaling_config[0].desired_size]
+  }
+
   tags = {
     Name = "${var.cluster_name}-node-group-main-${var.environment}"
   }
@@ -39,8 +44,12 @@ resource "aws_eks_node_group" "custom" {
 
   scaling_config {
     desired_size = 1
-    max_size     = 1
+    max_size     = 2
     min_size     = 1
+  }
+
+  lifecycle {
+    ignore_changes = [scaling_config[0].desired_size]
   }
 
 
