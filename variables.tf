@@ -45,3 +45,9 @@ variable "subnet_mask" {
   type    = number
   default = 24
 }
+
+variable "eks_version" {
+    type = string
+    default = "1.19"
+    description = "k8s version to use in eks cluster"
+}
