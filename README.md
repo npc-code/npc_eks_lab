@@ -6,7 +6,7 @@ Terraform project for creating an eks cluster for lab purposes.  Will create:
 - an eks cluster
 - 2 managed node groups, one using a launch template and the other using bare-minimum config
 - iam roles and policies for the cluster and worker nodes
-- iam roles and policies to be used in conjuntion with service accounts
+- iam roles and policies to be used in conjunction with service accounts
 - 2 service accounts for use with autoscaling and the ingress controller (cluster autoscaler and ingress controller are deployed using Helm provider)
 
 ## Use
