@@ -30,6 +30,7 @@ terraform apply
 - The private subnets are not private.  To keep cost and use of finite resources at a minimum, no NAT gateway(s) are created.
 - The output from terraform includes the server endpoint and certificate info.  you will need to insert this into a context within ~/.kube/config, or create your own separate kube-config file.
 - If you have deployed any ingress resources that use the ingress controller, you will need to delete these first before tearing down the lab.  Additionally, you will need to edit those ingress resources directly, removing any Fixations. (need to reference issue here).  Failing to do so will result in the ingress resources not being deleted, and the load balancer destruction never completing.
+- This lab will incur costs if left up.  EKS clusters cost $0.10 per hour, and running the 2 node groups using the default t3.medium at minimum capacity will cost 2 x ($0.0416) per hour.  Costs for data transfer over internet gateway should be negligible.  I take no responsibility for unexpected charges.
 
 
 
