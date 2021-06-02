@@ -20,7 +20,7 @@ Terraform project for creating an eks cluster for lab purposes.  Will create:
 profile      = $name_of_your_aws_profile
 base_network = "10.102.0.0"
 environment  = "development"
-cluster_name = "my_cluster
+cluster_name = "my_cluster"
 external_ip  = "$YOUR_IP/32"
 ```
 - Execute:
