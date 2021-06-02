@@ -44,20 +44,20 @@ resource "helm_release" "auto-scaler" {
   repository = "https://kubernetes.github.io/autoscaler"
   chart      = "cluster-autoscaler"
   namespace  = "kube-system"
-  
-    dynamic "set" {
-      for_each = {
-          "awsRegion" = data.aws_region.current.name
-          "autoDiscovery.clusterName" = var.cluster_name
-          "rbac.create" = true
-          "rbac.serviceAccount.create" = true
-          "rbac.serviceAccount.name" = local.k8s_service_account_name
-          "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn" = aws_iam_role.autoscaler.arn
-      }
-      
-      content {
-          name = set.key
-          value = set.value
-      }
+
+  dynamic "set" {
+    for_each = {
+      "awsRegion"                                                      = data.aws_region.current.name
+      "autoDiscovery.clusterName"                                      = var.cluster_name
+      "rbac.create"                                                    = true
+      "rbac.serviceAccount.create"                                     = true
+      "rbac.serviceAccount.name"                                       = local.k8s_service_account_name
+      "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn" = aws_iam_role.autoscaler.arn
     }
+
+    content {
+      name  = set.key
+      value = set.value
+    }
+  }
 }
