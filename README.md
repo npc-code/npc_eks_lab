@@ -9,6 +9,11 @@ Terraform project for creating an eks cluster for lab purposes.  Will create:
 - iam roles and policies to be used in conjunction with service accounts
 - 2 service accounts for use with autoscaling and the ingress controller (cluster autoscaler and ingress controller are deployed using Helm provider)
 
+## Requirements
+- terraform
+- aws account, profile with elevated permissions
+- kubectl (https://kubernetes.io/docs/tasks/tools/)
+
 ## Use
 - create a variable file ($WHATEVER.auto.tfvars):
 ```hcl
