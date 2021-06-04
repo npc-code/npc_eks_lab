@@ -43,7 +43,7 @@ kubectl get nodes
 
 ## Examples
 -  [**Cluster Autoscaling**](/examples/autoscaling/autoscale_example.md)
-
+-  [**Ingress Controller (node port)**](/examples/ingress_node_port/ingress_example.md)
 
 
 
@@ -52,7 +52,6 @@ kubectl get nodes
 - for your ```base_cidr```, avoid ```10.100.0.0```.  This is the default for pod networking within the cluster.
 - The private subnets are not private.  To keep cost and use of finite resources at a minimum, no NAT gateways are created.
 - The output from terraform includes the server endpoint and certificate info.  you will need to insert this into a context within ~/.kube/config, or create your own separate kube-config file.
-- If you have deployed any ingress resources that use the ingress controller, you will need to delete these first before tearing down the lab.  Additionally, you will need to edit those ingress resources directly, removing any finalizers. (need to reference issue here).  Failing to do so will result in the ingress resources not being deleted.  In addition, you will need to manually destroy the load balancer created by the ingress resource, as it is not tracked by the terraform state, and the public subnets/internet gateway will not be destroyed as they will be in use by the load balancer.
 - This lab will incur costs if left up.  EKS clusters cost $0.10 per hour, and running the 2 node groups using the default t3.medium at minimum capacity will cost 2 x ($0.0416) per hour.  Costs for data transfer over internet gateway should be negligible.  I take no responsibility for unexpected charges.
 
 

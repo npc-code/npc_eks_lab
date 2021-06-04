@@ -1,13 +1,16 @@
 # autoscaling example
 
-Simple example to demonstrate cluster autoscaling behavior.  Taken from: https://www.eksworkshop.com/
+Simple example to demonstrate cluster autoscaling behavior.  Taken from: https://www.eksworkshop.com/.
 
 ## Steps
 
-1. Use kubectl to deploy the ```nginx_to_scale.yaml``` file: ```kubectl apply -f nginx_to_scale.yaml```
+1. Use kubectl to deploy the ```nginx_to_scale.yaml``` file: ```kubectl apply -f examples/autoscaling/nginx_to_scale.yaml```
 2. Observe the running pods: ```kubectl get pods```
   - your output should be similar to:
-
+```
+    NAME                                 READY   STATUS              RESTARTS   AGE
+    nginx-to-scaleout-6fcd49fb84-7scd5   1/1     Running   0          5s
+```
 3. Observe the cluster's current nodes:  ```kubectl get nodes```.  You should only see 2 nodes if the cluster has just been launched.
 4. Scale the deployment: ```kubectl scale --replicas=10 deployment/nginx-to-scaleout```
 5. Observe pods in pending state: ```kubectl get pods```
