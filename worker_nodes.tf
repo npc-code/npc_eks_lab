@@ -1,9 +1,11 @@
 # Nodes in private subnets
 resource "aws_eks_node_group" "main" {
   cluster_name    = aws_eks_cluster.test_cluster.name
+  version         = aws_eks_cluster.test_cluster.version
   node_group_name = "${var.cluster_name}-node-group-main-${var.environment}"
   node_role_arn   = aws_iam_role.eks_nodes.arn
   subnet_ids      = module.network.private_subnets
+
 
   #ami_type        = var.ami_type
   #disk_size       = var.disk_size
