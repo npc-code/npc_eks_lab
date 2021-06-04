@@ -41,6 +41,11 @@ aws eks --region REGION_CODE --profile YOUR_PROFILE update-kubeconfig --name my_
 kubectl get nodes
 ```
 
+## Examples
+-  [**Cluster Autoscaling**](/examples/autoscaling/autoscale_example.md)
+
+
+
 
 ## Considerations
 - The lab aims to demonstrate what is needed if a user were to create an eks cluster using Terraform and chooses to pass a security group. It is important to understand that if the version used for the cluster is >= 1.14, a security group will be created automatically.  If you do not use a launch template when dealing with managed node groups, your nodes will be placed in this security group by default.  In this lab, the custom managed node group uses a separate security group that is passed to the cluster resource.  Appropriate security group rules are included.  Awareness and consideration of this reality should dictate the approach used in actual production.  
