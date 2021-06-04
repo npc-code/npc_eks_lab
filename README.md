@@ -43,6 +43,11 @@ aws eks --region REGION_CODE --profile YOUR_PROFILE update-kubeconfig --name my_
 kubectl get nodes
 ```
 
+- Clean up:
+```
+terraform destroy
+```
+
 ## Examples
 -  [**Cluster Autoscaling**](/examples/autoscaling/autoscale_example.md)
 -  [**Ingress Controller (node port)**](/examples/ingress_node_port/ingress_example.md)
