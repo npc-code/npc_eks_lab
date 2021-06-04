@@ -16,7 +16,8 @@ resource "aws_eks_node_group" "main" {
   }
 
   lifecycle {
-    ignore_changes = [scaling_config[0].desired_size]
+    ignore_changes        = [scaling_config[0].desired_size]
+    create_before_destroy = true
   }
 
   tags = {
@@ -28,6 +29,7 @@ resource "aws_eks_node_group" "main" {
     aws_iam_role_policy_attachment.aws_eks_worker_node_policy,
     aws_iam_role_policy_attachment.aws_eks_cni_policy,
     aws_iam_role_policy_attachment.ec2_read_only,
+    aws_eks_cluster.test_cluster
   ]
 }
 
@@ -49,7 +51,8 @@ resource "aws_eks_node_group" "custom" {
   }
 
   lifecycle {
-    ignore_changes = [scaling_config[0].desired_size]
+    ignore_changes        = [scaling_config[0].desired_size]
+    create_before_destroy = true
   }
 
 
@@ -67,6 +70,7 @@ resource "aws_eks_node_group" "custom" {
     aws_iam_role_policy_attachment.aws_eks_worker_node_policy,
     aws_iam_role_policy_attachment.aws_eks_cni_policy,
     aws_iam_role_policy_attachment.ec2_read_only,
+    aws_eks_cluster.test_cluster
   ]
 }
 
@@ -83,7 +87,7 @@ data "aws_ami" "eks_ami" {
 resource "aws_launch_template" "test_launch_template" {
   name = "test_launch_template"
 
-  vpc_security_group_ids = [module.network.node_sg]
+  #vpc_security_group_ids = [module.network.node_sg]
 
   block_device_mappings {
     device_name = "/dev/xvda"
@@ -92,6 +96,13 @@ resource "aws_launch_template" "test_launch_template" {
       volume_size = 20
       volume_type = "gp2"
     }
+  }
+
+  #need to see if we can do this and survive a scale out/scale in event
+  #may also need for terraform destroy to work.
+  network_interfaces {
+    delete_on_termination = true
+    security_groups       = [module.network.node_sg]
   }
 
   image_id      = data.aws_ami.eks_ami.id

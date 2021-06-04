@@ -23,6 +23,10 @@ resource "helm_release" "alb-ingress" {
   chart      = "aws-load-balancer-controller"
   namespace  = "kube-system"
 
+  depends_on = [
+    aws_eks_cluster.test_cluster
+  ]
+
   dynamic "set" {
     for_each = {
       "clusterName"                                               = var.cluster_name

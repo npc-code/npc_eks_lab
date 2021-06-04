@@ -96,7 +96,7 @@ resource "aws_security_group_rule" "eks_alb_to_custom_nodes" {
     description              = "allow communication from alb to nodes in generated sg."
   from_port                = 30000
   protocol                 = -1
-  security_group_id        = aws_security_group.eks_cluster.id
+  security_group_id        = aws_security_group.eks_nodes.id
   source_security_group_id = aws_security_group.eks_cluster_alb.id
   to_port                  = 32767
   type                     = "ingress"
