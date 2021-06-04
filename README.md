@@ -23,6 +23,7 @@ environment  = "development"
 cluster_name = "my_cluster"
 external_ip  = "$YOUR_IP/32"
 ```
+  the ```external_ip``` variable is used to restrict incoming communication to the k8s api server to your ip, as well as limiting access to any ingress controller deployed.
 - Execute:
 ```
 terraform init
@@ -48,7 +49,9 @@ kubectl get nodes
 
 
 ## Considerations
-- The lab aims to demonstrate what is needed if a user were to create an eks cluster using Terraform and chooses to pass a security group. It is important to understand that if the version used for the cluster is >= 1.14, a security group will be created automatically.  If you do not use a launch template when dealing with managed node groups, your nodes will be placed in this security group by default.  In this lab, the custom managed node group uses a separate security group that is passed to the cluster resource.  Appropriate security group rules are included.  Awareness and consideration of this reality should dictate the approach used in actual production.  
+- The lab aims to demonstrate what is needed if a user were to create an eks cluster using Terraform and chooses to pass a security group. It is important to understand that if the version used for the cluster is >= 1.14, a security group will be created automatically.  If you do not use a launch template when dealing with managed node groups, your nodes will be placed in this security group by default.  In this lab, the custom managed node group uses a separate security group that is passed to the cluster resource.  Appropriate security group rules are included.  Awareness and consideration of this reality should dictate the approach used in actual production.
+- The security group rules are based on recommendations from the AWS documentation.  More restrictive rules would be advised in production.
+- IAM policies are based off of recommended AWS policies.  Exploring more restrictive policies for the autoscaler and load-balancer-controller should be explored.    
 - for your ```base_cidr```, avoid ```10.100.0.0```.  This is the default for pod networking within the cluster.
 - The private subnets are not private.  To keep cost and use of finite resources at a minimum, no NAT gateways are created.
 - The output from terraform includes the server endpoint and certificate info.  you will need to insert this into a context within ~/.kube/config, or create your own separate kube-config file.
