@@ -13,6 +13,7 @@ Terraform project for creating an eks cluster for lab purposes.  Will create:
 - terraform
 - aws account, profile with elevated permissions
 - kubectl (https://kubernetes.io/docs/tasks/tools/)
+- helm (https://helm.sh/docs/intro/install/)
 
 ## Use
 - create a variable file ($WHATEVER.auto.tfvars):
