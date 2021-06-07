@@ -32,5 +32,16 @@ resource "aws_security_group" "eks_cluster_alb" {
   }
 }
 
+#eks cluster alb security group
+resource "aws_security_group" "pod_security_group" {
+  name        = "eksPod_SG"
+  description = "security group for pods"
+  vpc_id      = aws_vpc.cluster_vpc.id
+
+  tags = {
+    Name = "${var.eks_cluster_name}-podd"
+  }
+}
+
 
 

@@ -1,0 +1,65 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: confused-travolta
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: confused-travolta
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: confused-travolta
+    spec:
+      containers:
+      - image: nginx
+        imagePullPolicy: Always
+        name: confused-travolta
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: confused-travolta
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: confused-travolta
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-travolta
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/security-groups: {{.Values.albSecurityGroup}}
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: confused-travolta
+              servicePort: 80
+---
+apiVersion: vpcresources.k8s.aws/v1beta1
+kind: SecurityGroupPolicy
+metadata:
+  name: allow-alb-access
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: confused-travolta
+  securityGroups:
+    groupIds:
+      - {{.Values.podSecurityGroup}} 
+      #- ${POD_SG}

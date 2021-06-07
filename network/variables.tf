@@ -19,8 +19,8 @@ variable "eks_generated_sg" {
 }
 
 variable "external_ip" {
-    type = string
-    description = "ip range to allow access from for alb"
+  type        = string
+  description = "ip range to allow access from for alb"
 }
 
 variable "network_mask" {

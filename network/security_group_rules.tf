@@ -31,6 +31,26 @@ resource "aws_security_group_rule" "cluster_outbound" {
   type                     = "egress"
 }
 
+resource "aws_security_group_rule" "pod_outbound_cluster_comms" {
+  description              = "pods outbound"
+  from_port                = 53
+  protocol                 = "tcp"
+  security_group_id        = var.eks_generated_sg
+  source_security_group_id = aws_security_group.pod_security_group.id
+  to_port                  = 53
+  type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "pod_outbound_cluster_comms_udp" {
+  description              = "pods outbound"
+  from_port                = 53
+  protocol                 = "udp"
+  security_group_id        = var.eks_generated_sg
+  source_security_group_id = aws_security_group.pod_security_group.id
+  to_port                  = 53
+  type                     = "ingress"
+}
+
 resource "aws_security_group_rule" "worker_node_outbound" {
   description       = "worker egress"
   from_port         = 0
@@ -82,7 +102,7 @@ resource "aws_security_group_rule" "nodes_egress_generated_sg" {
 }
 
 resource "aws_security_group_rule" "eks_alb_to_nodes" {
-    description              = "allow communication from alb to nodes in generated sg."
+  description              = "allow communication from alb to nodes in generated sg."
   from_port                = 30000
   protocol                 = -1
   security_group_id        = var.eks_generated_sg
@@ -93,12 +113,22 @@ resource "aws_security_group_rule" "eks_alb_to_nodes" {
 }
 
 resource "aws_security_group_rule" "eks_alb_to_custom_nodes" {
-    description              = "allow communication from alb to nodes in generated sg."
+  description              = "allow communication from alb to nodes in generated sg."
   from_port                = 30000
   protocol                 = -1
   security_group_id        = aws_security_group.eks_nodes.id
   source_security_group_id = aws_security_group.eks_cluster_alb.id
   to_port                  = 32767
+  type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "eks_alb_pod_sg" {
+  description              = "allow communication from alb to nodes in generated sg."
+  from_port                = 80
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.pod_security_group.id
+  source_security_group_id = aws_security_group.eks_cluster_alb.id
+  to_port                  = 80
   type                     = "ingress"
 }
 
