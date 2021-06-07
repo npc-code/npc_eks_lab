@@ -138,6 +138,10 @@ resource "aws_eks_node_group" "chonky" {
   #instance_types  = var.instance_types
   instance_types = ["m5.large"]
 
+  labels = {
+    "type" = "chonky"
+  }
+
   scaling_config {
     desired_size = 1
     max_size     = 1

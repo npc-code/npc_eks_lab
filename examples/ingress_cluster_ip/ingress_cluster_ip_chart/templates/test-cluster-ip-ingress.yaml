@@ -19,6 +19,15 @@ spec:
         name: confused-travolta
         ports:
         - containerPort: 80
+        volumeMounts:
+        - name: index
+          mountPath: /usr/share/nginx/html
+      nodeSelector:
+        type: chonky
+      volumes:
+      - name: index
+        configMap:
+          name: travolta
 ---
 apiVersion: v1
 kind: Service
@@ -61,5 +70,12 @@ spec:
       app.kubernetes.io/name: confused-travolta
   securityGroups:
     groupIds:
-      - {{.Values.podSecurityGroup}} 
-      #- ${POD_SG}
+      - {{.Values.podSecurityGroup}}
+---
+apiVersion: v1
+data:
+  index.html: |
+    <img src="https://media.giphy.com/media/hEc4k5pN17GZq/giphy.gif" alt="wat"  width="1000" />
+kind: ConfigMap
+metadata:
+  name: travolta

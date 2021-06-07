@@ -17,3 +17,7 @@ output "created_cluster_sg_from_module" {
 output "alb_security_group_id" {
   value = module.network.alb_sg
 }
+
+output "pod_security_group_id" {
+  value = module.network.pod_sg
+}
