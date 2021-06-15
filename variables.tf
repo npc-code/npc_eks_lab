@@ -29,6 +29,11 @@ variable "network_mask" {
   default = 16
 }
 
+variable "pod_sg_example" {
+  type    = bool
+  default = false
+}
+
 variable "profile" {
   type        = string
   description = "aws profile to use"

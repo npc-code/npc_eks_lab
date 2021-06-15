@@ -3,7 +3,7 @@ output "eni_subnets" {
 }
 
 output "alb_sg" {
-    value = aws_security_group.eks_cluster_alb.id
+  value = aws_security_group.eks_cluster_alb.id
 }
 
 output "cluster_sg" {
@@ -12,6 +12,10 @@ output "cluster_sg" {
 
 output "node_sg" {
   value = aws_security_group.eks_nodes.id
+}
+
+output "pod_sg" {
+  value = aws_security_group.pod_security_group.id
 }
 
 output "public_subnets" {

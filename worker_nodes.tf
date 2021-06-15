@@ -127,3 +127,41 @@ Content-Type: text/x-shellscript; charset="us-ascii"
     }
   }
 }
+
+resource "aws_eks_node_group" "chonky" {
+  count           = var.pod_sg_example ? 1 : 0
+  cluster_name    = aws_eks_cluster.test_cluster.name
+  version         = aws_eks_cluster.test_cluster.version
+  node_group_name = "${var.cluster_name}-node-group-chonky-${var.environment}"
+  node_role_arn   = aws_iam_role.eks_nodes.arn
+  subnet_ids      = module.network.private_subnets
+  #instance_types  = var.instance_types
+  instance_types = ["m5.large"]
+
+  labels = {
+    "type" = "chonky"
+  }
+
+  scaling_config {
+    desired_size = 1
+    max_size     = 1
+    min_size     = 1
+  }
+
+  lifecycle {
+    ignore_changes        = [scaling_config[0].desired_size]
+    create_before_destroy = true
+  }
+
+  tags = {
+    Name = "${var.cluster_name}-node-group-chonky-${var.environment}"
+  }
+  # Ensure that IAM Role permissions are created before and deleted after EKS Node Group handling.
+  # Otherwise, EKS will not be able to properly delete EC2 Instances and Elastic Network Interfaces.
+  depends_on = [
+    aws_iam_role_policy_attachment.aws_eks_worker_node_policy,
+    aws_iam_role_policy_attachment.aws_eks_cni_policy,
+    aws_iam_role_policy_attachment.ec2_read_only,
+    aws_eks_cluster.test_cluster
+  ]
+}
