@@ -18,7 +18,7 @@ resource "aws_subnet" "public_subnets" {
   map_public_ip_on_launch = true
   tags = {
     "Name"                                          = "public-subnet-${count.index}"
-    "kubernetes.io/cluster/${var.eks_cluster_name}" = "shared"
+    #"kubernetes.io/cluster/${var.eks_cluster_name}" = "shared"
     "kubernetes.io/role/elb"                        = 1
   }
 }
@@ -29,6 +29,7 @@ resource "aws_subnet" "private_subnets" {
   vpc_id                  = aws_vpc.cluster_vpc.id
   cidr_block              = cidrsubnet(local.base_cidr, local.new_bits, count.index + local.num_subnets)
   availability_zone       = element(var.azs, count.index)
+  #let's play with this, make sure we don't need it anymore
   map_public_ip_on_launch = true
   tags = {
     "Name"                            = "private-subnet-${count.index}"
